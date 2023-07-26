@@ -1,5 +1,6 @@
 import { Router } from "express";
-import rentRouter from "./alugueis.routes.js";
+import rentRouter from "./jogos.routes.js";
+
 
 const router = Router()
 
