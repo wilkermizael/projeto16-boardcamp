@@ -3,7 +3,7 @@ import { db } from "../database/database.js"
 export async function listGame(req, res){
     try{
         const games = await db.query(`SELECT * FROM games;`)
-        res.status(200).send(games.rows[0])
+        res.status(200).send(games.rows)
     }catch(error){
         res.status(500).send(error.message)
     }
