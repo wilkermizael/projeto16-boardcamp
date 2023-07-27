@@ -12,13 +12,18 @@ export async function listGame(req, res){
 export async function insertGame (req,res){
     const newGame = req.body
    //console.log(newGame.pricePerDay)
-
+    
     try{
-       await db.query(`INSERT INTO games (name, image, "stockTotal", "pricePerDay")
-        VALUES ($1, $2, $3, $4);`
-        ,[newGame.name, newGame.image, newGame.stockTotal,  newGame.pricePerDay]
-        )
-        res.status(201)
+        const gameData = await db.query(`SELECT * FROM games WHERE name =$1;`,[newGame.name])
+        if(!gameData.rows){
+            await db.query(`INSERT INTO games (name, image, "stockTotal", "pricePerDay")
+            VALUES ($1, $2, $3, $4);`
+            ,[newGame.name, newGame.image, newGame.stockTotal,  newGame.pricePerDay]
+            )
+            return res.status(201)
+        } 
+        return res.sendStatus(409)
+        
     }catch(error){
         res.status(500).send(error.message)
     }
