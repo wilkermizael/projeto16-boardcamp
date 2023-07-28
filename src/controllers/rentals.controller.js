@@ -39,3 +39,40 @@ export async function insertRentals (req,res){
      }
      
 }
+
+export async function listRentals (req,res){
+    
+    try{
+        const list = await db.query(`SELECT r.*, g."id" AS "idGame",g."name" AS "nameGame", c."id" AS "idCustomer", c."name" AS "nameCustomer"
+         FROM rentals r
+         JOIN customers c  on r."customerId" = c."id"
+         JOIN games g on r."gameId" = g."id";`
+         )
+
+        const listObject = list.rows.map( item =>(
+           {
+               id: item.id,
+               customerId:item.customerId,
+               gameId:item.gameId,
+               daysRented: item.daysRented,
+               returnDate: item.returnDate,
+               originalPrice: item.originalPrice,
+               delayFee: item.delayFee,
+               customer:{
+                   id:item.idCustomer,
+                   name:item.nameCustomer
+               },
+               game:{
+                   id:item.idGame,
+                   name: item.nameGame
+               }
+
+            }
+        ))
+        console.log(listObject)
+        res.send(listObject)
+    }catch(error){
+        res.status(500).send(error.message)
+    }
+   
+}
