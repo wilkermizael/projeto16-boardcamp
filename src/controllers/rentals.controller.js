@@ -76,3 +76,32 @@ export async function listRentals (req,res){
     }
    
 }
+
+export async function returnRentals(req, res){
+    const {id} = req.params
+    try{
+        //VERIFICAR SE O ID DO ALUGUEL EXISTE
+        const returnRent = await db.query(`SELECT * FROM rentals WHERE id=$1;`,[id])
+        if(returnRent.rows.length === 0) return res.sendStatus(404)
+        //VERIFICA SE O FILME JA FOI DEVOLVIDO
+        if(returnRent.rows[0].returnDate !== null) return res.sendStatus(400)
+        
+        //CALCULANDO OS DIAS QUE ATRASO
+        const date = returnRent.rows[0].rentDate
+        const diffDate = Number(dayjs().diff(date, 'day'))
+        
+        if(diffDate > returnRent.rows[0].daysRented){//CASO TENHA ATRASO
+            const delayFee = (diffDate - returnRent.rows[0].daysRented)*returnRent.rows[0].originalPrice //PREÇO A PAGAR PELO ATRASO
+            await db.query(`UPDATE rentals SET "returnDate"=$1, "delayFee"= $2 where id=$3;`,[dayjs(), delayFee, id])
+            return res.sendStatus(200)
+        }
+        await db.query(`UPDATE rentals SET "returnDate"=$1, "delayFee"= $2 where id=$3;`,[dayjs(), 0, id])
+        res.sendStatus(200)
+        //ATUALIZANDO A TABELA DEPOIS DA ENTREGA DO JOGO
+        
+        
+    }catch(error){
+        res.status(500).send(error.message)
+    }
+    
+}
