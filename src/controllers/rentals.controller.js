@@ -105,3 +105,20 @@ export async function returnRentals(req, res){
     }
     
 }
+
+export async function deleteRentals(req,res){
+    const {id} = req.params
+    try{
+        //VERIFICANDO SE O ID EXISTE
+        const returnRent = await db.query(`SELECT * FROM rentals WHERE id=$1;`,[id])
+        if(returnRent.rows.length === 0) return res.sendStatus(404)
+
+        //VERIFICA SE O FILME JA FOI FINALIZADO
+        if(returnRent.rows[0].returnDate === null) return res.sendStatus(400) //SE NÃO ESTIVER FINALIZADO, STATUS 400
+
+        //DELETAR O ALUGUEL
+        await db.query(`DELETE FROM rentals WHERE id=$1;`,[id])
+    }catch(error){
+        res.status(500).send(error.message)
+    }
+}
