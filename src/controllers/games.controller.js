@@ -7,6 +7,7 @@ export async function listGame(req, res){
     }catch(error){
         res.status(500).send(error.message)
     }
+   
 }
 
 export async function insertGame (req,res){
