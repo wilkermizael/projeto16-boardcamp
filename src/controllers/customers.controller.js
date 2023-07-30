@@ -26,12 +26,14 @@ export async function listCustomers(req,res){
             const customers = await db.query(`SELECT * FROM customers;`);
             
             const formattedCustomers = customers.rows.map(item => {
-              const data = dayjs(item.birthday).format('YYYY-MM-DD');
+              const birthday = dayjs(item.birthday).format('YYYY-MM-DD');
               // Excluindo a propriedade "birthday" do objeto individual
-              const { birthday, ...customerWithoutBirthday } = item;
-              console.log(customerWithoutBirthday)
+              delete item.birthday
+              //const { birthday, ...customerWithoutBirthday } = item;
+             
               // Retornando o objeto modificado
-              return { ...customerWithoutBirthday, data };
+              //return { ...customerWithoutBirthday, birthday };
+              return { ...item, birthday };
             });
             return res.status(201).send(formattedCustomers);
           }
@@ -43,11 +45,11 @@ export async function listCustomers(req,res){
             return res.sendStatus(404)
         }else{
           
-            const dataFormatada = dayjs(customers.rows.birthday).format('YYYY-MM-DD');
+            const birthday = dayjs(customers.rows.birthday).format('YYYY-MM-DD');
             //const {birthday, ...itemFormatado} = customers.rows[0]
             delete customers.rows[0].birthday
-            //return res.status(201).send({...itemFormatado, dataFormatada})
-            return res.status(201).send({...customers.rows[0], dataFormatada})
+            //return res.status(201).send({...itemFormatado, birthday})
+            return res.status(201).send({...customers.rows[0], birthday})
         }
         
     }catch(error){
