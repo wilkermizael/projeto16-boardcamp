@@ -1,4 +1,5 @@
 import { db } from "../database/database.js";
+import dayjs from "dayjs";
 
 export async function insertCustomers (req, res){
     const dataClients = req.body
@@ -19,14 +20,21 @@ export async function insertCustomers (req, res){
 
 export async function listCustomers(req,res){
     const {id} = req.params
-
     try{
         
-        if(!id){
-            const customers = await db.query(`SELECT * FROM customers;`)
-            return res.status(201).send(customers.rows)
-        
-        }
+        if (!id) {
+            const customers = await db.query(`SELECT * FROM customers;`);
+            
+            const formattedCustomers = customers.rows.map(item => {
+              const data = dayjs(item.birthday).format('YYYY-MM-DD');
+              // Excluindo a propriedade "birthday" do objeto individual
+              const { birthday, ...customerWithoutBirthday } = item;
+              console.log(customerWithoutBirthday)
+              // Retornando o objeto modificado
+              return { ...customerWithoutBirthday, data };
+            });
+            return res.status(201).send(formattedCustomers);
+          }
         
         const customers = await db.query(`SELECT * FROM customers WHERE id =$1;`,[id])
         
@@ -34,7 +42,12 @@ export async function listCustomers(req,res){
     
             return res.sendStatus(404)
         }else{
-            return res.status(201).send(customers.rows)
+          
+            const dataFormatada = dayjs(customers.rows.birthday).format('YYYY-MM-DD');
+            //const {birthday, ...itemFormatado} = customers.rows[0]
+            delete customers.rows[0].birthday
+            //return res.status(201).send({...itemFormatado, dataFormatada})
+            return res.status(201).send({...customers.rows[0], dataFormatada})
         }
         
     }catch(error){
