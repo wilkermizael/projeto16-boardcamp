@@ -22,7 +22,7 @@ export async function insertGame (req,res){
             VALUES ($1, $2, $3, $4);`
             ,[newGame.name, newGame.image, newGame.stockTotal,  newGame.pricePerDay]
             )
-            return res.sedStatus(201)
+            return res.sendStatus(201)
         } 
         return res.sendStatus(409)
         
