@@ -16,7 +16,8 @@ export async function insertGame (req,res){
     
     try{
         const gameData = await db.query(`SELECT * FROM games WHERE name =$1;`,[newGame.name])
-        if(!gameData.rows){
+        console.log(gameData.rows)
+        if(gameData.rows.length === 0){
             await db.query(`INSERT INTO games (name, image, "stockTotal", "pricePerDay")
             VALUES ($1, $2, $3, $4);`
             ,[newGame.name, newGame.image, newGame.stockTotal,  newGame.pricePerDay]

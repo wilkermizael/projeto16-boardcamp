@@ -26,7 +26,10 @@ export async function insertRentals (req,res){
         
         // CONDIÇÃO CASO TENTE ALUGAR UM JOGO QUE EXCEDE A QUANTIDADE NO ESTOQUE
         const qtdStock = await db.query(`select r."gameId", g."id" AS "idGameStock", g."stockTotal"  from rentals r join games g on r."gameId" = g."id" WHERE g.id=$1;`,[gameId])
-        if(qtdStock.rows.length === qtdStock.rows[0].stockTotal) return res.sendStatus(400) 
+       // console.log(qtdStock.rows)
+        
+        
+        if(qtdStock.rows.length > 0  && qtdStock.rows.length === qtdStock.rows[0].stockTotal) return res.sendStatus(400) 
         
         // INSERINDO UM ALUGUEL
         await db.query(`INSERT INTO rentals ("customerId", "gameId", "rentDate","daysRented", "returnDate", "originalPrice", "delayFee"  )
@@ -69,7 +72,7 @@ export async function listRentals (req,res){
 
             }
         ))
-        console.log(listObject)
+        //console.log(listObject)
         res.send(listObject)
     }catch(error){
         res.status(500).send(error.message)
