@@ -94,9 +94,8 @@ export async function returnRentals(req, res){
         const diffDate = Number(dayjs().format('YYYY-MM-DD').diff(date, 'day'))
         
         if(diffDate > returnRent.rows[0].daysRented){//CASO TENHA ATRASO
-            //const delayFee = (diffDate - returnRent.rows[0].daysRented)*returnRent.rows[0].originalPrice //PREÇO A PAGAR PELO ATRASO
-            const delayFee = diffDate*returnRent.rows[0].originalPrice
-            await db.query(`UPDATE rentals SET "returnDate"=$1, "delayFee"= $2 where id=$3;`,[dayjs(), delayFee, id])
+            const delayFee = (diffDate - returnRent.rows[0].daysRented)*returnRent.rows[0].originalPrice //PREÇO A PAGAR PELO ATRASO
+            await db.query(`UPDATE rentals SET "returnDate"=$1, "delayFee"= $2 where id=$3;`,[dayjs().format('YYYY-MM-DD'), delayFee, id])
             return res.sendStatus(200)
         }
         await db.query(`UPDATE rentals SET "returnDate"=$1, "delayFee"= $2 where id=$3;`,[dayjs().format('YYYY-MM-DD'), 0, id])
