@@ -99,7 +99,7 @@ export async function returnRentals(req, res){
             return res.sendStatus(200)
         }
         await db.query(`UPDATE rentals SET "returnDate"=$1, "delayFee"= $2 where id=$3;`,[dayjs(), 0, id])
-        res.sendStatus(201)
+        res.sendStatus(200)
         //ATUALIZANDO A TABELA DEPOIS DA ENTREGA DO JOGO
         
         
@@ -121,7 +121,7 @@ export async function deleteRentals(req,res){
 
         //DELETAR O ALUGUEL
         await db.query(`DELETE FROM rentals WHERE id=$1;`,[id])
-        res.sendStatus(201)
+        res.sendStatus(200)
     }catch(error){
         res.status(500).send(error.message)
     }
