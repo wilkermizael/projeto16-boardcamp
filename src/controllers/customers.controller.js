@@ -70,10 +70,10 @@ export async function updateCustomers(req,res){
            
         }
         await db.query(`UPDATE customers SET name = $1,phone = $2,cpf= $3, birthday= $4 where id= $5;`,
-        [dataUpdate.name, dataUpdate.phone, dataUpdate.cpf, dataUpdate.birthday, id]
+        [dataUpdate.name, dataUpdate.phone, dataUpdate.cpf, dayjs(dataUpdate.birthday).format('YYYY-MM-DD'), id]
 
         )
-        res.sendStatus(201)
+        res.sendStatus(200)
         
     }catch(error){
         res.status(500).send(error.message)
