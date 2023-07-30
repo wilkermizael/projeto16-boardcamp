@@ -17,7 +17,7 @@ export async function insertRentals (req,res){
         
         const dataRent = {
             ...req.body,
-            rentDate: dayjs().toString(),
+            rentDate: dayjs().format('YYYY-MM-DD'),
             returnDate: null,
             originalPrice,
             delayFee: null   
@@ -57,6 +57,7 @@ export async function listRentals (req,res){
                id: item.id,
                customerId:item.customerId,
                gameId:item.gameId,
+               rentDate:dayjs(item.rentDate).format('YYYY-MM-DD'),
                daysRented: item.daysRented,
                returnDate: item.returnDate,
                originalPrice: item.originalPrice,
@@ -72,7 +73,6 @@ export async function listRentals (req,res){
 
             }
         ))
-        //console.log(listObject)
         res.status(201).send(listObject)
     }catch(error){
         res.status(500).send(error.message)
