@@ -90,15 +90,16 @@ export async function returnRentals(req, res){
         if(returnRent.rows[0].returnDate !== null) return res.sendStatus(400)
         
         //CALCULANDO OS DIAS QUE ATRASO
-        const date = returnRent.rows[0].rentDate
-        const diffDate = Number(dayjs().format('YYYY-MM-DD').diff(date, 'day'))
+        const date = dayjs(returnRent.rows[0].rentDate).format('YYYY-MM-DD')
+        const diffDate = Number(dayjs().diff(date, 'day'))
+        
         
         if(diffDate > returnRent.rows[0].daysRented){//CASO TENHA ATRASO
             const delayFee = (diffDate - returnRent.rows[0].daysRented)*returnRent.rows[0].originalPrice //PREÇO A PAGAR PELO ATRASO
-            await db.query(`UPDATE rentals SET "returnDate"=$1, "delayFee"= $2 where id=$3;`,[dayjs().format('YYYY-MM-DD'), delayFee, id])
+            await db.query(`UPDATE rentals SET "returnDate"=$1, "delayFee"= $2 where id=$3;`,[dayjs(), delayFee, id])
             return res.sendStatus(200)
         }
-        await db.query(`UPDATE rentals SET "returnDate"=$1, "delayFee"= $2 where id=$3;`,[dayjs().format('YYYY-MM-DD'), 0, id])
+        await db.query(`UPDATE rentals SET "returnDate"=$1, "delayFee"= $2 where id=$3;`,[dayjs(), 0, id])
         res.sendStatus(200)
         //ATUALIZANDO A TABELA DEPOIS DA ENTREGA DO JOGO
         
