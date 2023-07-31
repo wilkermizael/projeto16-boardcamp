@@ -60,17 +60,17 @@ export async function listCustomers(req,res){
 export async function updateCustomers(req,res){
     const id = Number(req.params.id)
     const dataUpdate = req.body
-    console.log(dataUpdate)
+    console.log(id)
     
 
     try{
         const customer = await db.query(`SELECT * FROM customers WHERE cpf = $1;`,[dataUpdate.cpf])
         
-        if(customer.rows[0].id !== Number(id)){
+        if(customer.rows[0].id !== id){
             return res.sendStatus(409)
            
         }
-        await db.query(`UPDATE customers SET name = $1,phone = $2,cpf= $3, birthday= $4 where id= $5;`,
+        await db.query(`UPDATE customers SET name = $1,phone = $2,cpf= $3, birthday= $4 WHERE id= $5;`,
         [dataUpdate.name, dataUpdate.phone, dataUpdate.cpf, dayjs(dataUpdate.birthday).format('YYYY-MM-DD'), id]
 
         )
