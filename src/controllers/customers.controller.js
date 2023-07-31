@@ -70,8 +70,8 @@ export async function updateCustomers(req,res){
             return res.sendStatus(409)
            
         }
-        await db.query(`UPDATE customers SET name = $1,phone = $2,cpf= $3, birthday= $4 WHERE id= $5;`,
-        [dataUpdate.name, dataUpdate.phone, dataUpdate.cpf, dayjs(dataUpdate.birthday).format('YYYY-MM-DD'), id]
+        await db.query(`UPDATE customers SET name = $1, phone = $2, birthday= $3 WHERE id= $4;`,
+        [dataUpdate.name, dataUpdate.phone, dayjs(dataUpdate.birthday).format('YYYY-MM-DD'), id]
 
         )
         res.sendStatus(200)
