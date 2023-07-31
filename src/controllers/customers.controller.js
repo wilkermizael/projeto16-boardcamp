@@ -58,13 +58,14 @@ export async function listCustomers(req,res){
 }
 
 export async function updateCustomers(req,res){
-    const {id} = req.params
+    const id = Number(req.params.id)
     const dataUpdate = req.body
+    console.log(dataUpdate)
     
 
     try{
         const customer = await db.query(`SELECT * FROM customers WHERE cpf = $1;`,[dataUpdate.cpf])
-       
+        
         if(customer.rows[0].id !== Number(id)){
             return res.sendStatus(409)
            
